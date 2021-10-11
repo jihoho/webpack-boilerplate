@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     entry: {
-        index: "./src/entry_point/app.js",
+        index: "./src/entry_point/app.jsx",
     },
     output: {
         // 현재 절대 경로, public 하위 경로
@@ -20,12 +20,15 @@ module.exports = {
                 use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
             },
             {
-                test: /\.m?js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ["@babel/preset-env"],
+                        presets: [
+                            ["@babel/preset-env", { targets: { browsers: ["last 2 versions", ">= 5% in KR"] } }],
+                            "@babel/react",
+                        ],
                     },
                 },
             },
@@ -44,7 +47,15 @@ module.exports = {
                     },
                 },
             },
+            {
+                test: /\.tsx?$/,
+                use: "ts-loader",
+                exclude: /node_modules/,
+            },
         ],
+    },
+    resolve: {
+        extensions: [".tsx", ".ts", ".js"],
     },
     plugins: [
         new HtmlWebpackPlugin({
